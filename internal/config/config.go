@@ -17,6 +17,17 @@ const (
 	serverAddressDefault = "0.0.0.0:8080"
 )
 
+func New() (*Config, error) {
+	serverAddress, err := resolveServerAddress()
+	if err != nil {
+		return nil, err
+	}
+	config := &Config{
+		ServerAddress: serverAddress,
+	}
+	return config, nil
+}
+
 func resolveServerAddress() (string, error) {
 	serverAddress := getEnv(serverAddressKey, serverAddressDefault)
 	_, _, err := net.SplitHostPort(serverAddress)
