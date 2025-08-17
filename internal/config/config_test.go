@@ -24,6 +24,22 @@ func TestNew(t *testing.T) {
 			for key, value := range testCase.envValues {
 				t.Setenv(key, value)
 			}
+			config, err := New()
+			if err == nil && testCase.wantError {
+				t.Fatal("New() error=nil")
+			}
+			if err != nil && !testCase.wantError {
+				t.Fatalf("New() error=%v", err)
+			}
+			if testCase.wantError {
+				return
+			}
+			if config == nil {
+				t.Fatal("New() *Config=nil")
+			}
+			if config.ServerAddress != testCase.wantServerAddress {
+				t.Errorf("New().ServerAddress got=%s want=%s", config.ServerAddress, testCase.wantServerAddress)
+			}
 		})
 	}
 }
