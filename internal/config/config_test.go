@@ -41,10 +41,7 @@ func TestNew(t *testing.T) {
 				t.Setenv(key, value)
 			}
 			config, err := New()
-			if err == nil && testCase.wantError {
-				t.Fatal("New() error=nil")
-			}
-			if err != nil && !testCase.wantError {
+			if (err != nil) != testCase.wantError {
 				t.Fatalf("New() error=%v", err)
 			}
 			if testCase.wantError {
