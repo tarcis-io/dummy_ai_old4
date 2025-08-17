@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestNew tests the creation of a new Config instance.
 func TestNew(t *testing.T) {
 	t.Run("should create a new Config with default values", func(t *testing.T) {
 		os.Unsetenv(serverAddressKey)
