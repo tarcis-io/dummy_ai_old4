@@ -21,6 +21,9 @@ func TestNew(t *testing.T) {
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
+			for key, value := range testCase.envValues {
+				t.Setenv(key, value)
+			}
 		})
 	}
 }
