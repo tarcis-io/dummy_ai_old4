@@ -11,9 +11,9 @@ func TestNew(t *testing.T) {
 		os.Unsetenv(serverAddressKey)
 		config, err := New()
 		if config == nil {
-			t.Fatal("New() *Config=nil")
+			t.Error("New() *Config=nil")
 		}
-		if config.ServerAddress != serverAddressDefault {
+		if config != nil && config.ServerAddress != serverAddressDefault {
 			t.Errorf("New().ServerAddress got=%s want=%s", config.ServerAddress, serverAddressDefault)
 		}
 		if err != nil {
@@ -25,9 +25,9 @@ func TestNew(t *testing.T) {
 		t.Setenv(serverAddressKey, serverAddress)
 		config, err := New()
 		if config == nil {
-			t.Fatal("New() *Config=nil")
+			t.Error("New() *Config=nil")
 		}
-		if config.ServerAddress != serverAddress {
+		if config != nil && config.ServerAddress != serverAddress {
 			t.Errorf("New().ServerAddress got=%s want=%s", config.ServerAddress, serverAddress)
 		}
 		if err != nil {
