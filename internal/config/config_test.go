@@ -34,4 +34,15 @@ func TestNew(t *testing.T) {
 			t.Errorf("New() error=%v", err)
 		}
 	})
+	t.Run("should return an error if any of the configurations cannot be resolved", func(t *testing.T) {
+		serverAddress := "invalid"
+		t.Setenv(serverAddressKey, serverAddress)
+		config, err := New()
+		if config != nil {
+			t.Error("New() *Config!=nil")
+		}
+		if err == nil {
+			t.Error("New() error=nil")
+		}
+	})
 }
