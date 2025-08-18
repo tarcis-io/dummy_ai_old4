@@ -30,6 +30,18 @@ func TestNew(t *testing.T) {
 			wantServerAddress: "127.0.0.1:3000",
 			wantError:         false,
 		},
+		{
+			name:              "should return an error if the server address cannot be resolved: empty",
+			envValues:         map[string]string{serverAddressKey: ""},
+			wantServerAddress: "",
+			wantError:         true,
+		},
+		{
+			name:              "should return an error if the server address cannot be resolved: invalid",
+			envValues:         map[string]string{serverAddressKey: "invalid"},
+			wantServerAddress: "",
+			wantError:         true,
+		},
 	}
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
