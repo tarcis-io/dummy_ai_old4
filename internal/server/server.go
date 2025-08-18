@@ -7,7 +7,7 @@ import (
 type (
 	Server struct {
 		address string
-		handler http.Handler
+		handler *http.ServeMux
 	}
 )
 
