@@ -19,18 +19,14 @@ func TestNew(t *testing.T) {
 			wantError:         false,
 		},
 		{
-			name: "should create a new Config instance with custom server address: localhost:8081",
-			envValues: map[string]string{
-				serverAddressKey: "localhost:8081",
-			},
+			name:              "should create a new Config instance with custom server address: localhost:8081",
+			envValues:         map[string]string{serverAddressKey: "localhost:8081"},
 			wantServerAddress: "localhost:8081",
 			wantError:         false,
 		},
 		{
-			name: "should create a new Config instance with custom server address: 127.0.0.1:3000",
-			envValues: map[string]string{
-				serverAddressKey: "127.0.0.1:3000",
-			},
+			name:              "should create a new Config instance with custom server address: 127.0.0.1:3000",
+			envValues:         map[string]string{serverAddressKey: "127.0.0.1:3000"},
 			wantServerAddress: "127.0.0.1:3000",
 			wantError:         false,
 		},
