@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// TestNew tests the creation of a new Config instance.
+// TestNew verifies that the New function correctly initializes a Config instance.
 func TestNew(t *testing.T) {
 	testCases := []struct {
 		name              string
@@ -43,23 +43,23 @@ func TestNew(t *testing.T) {
 			wantError:         true,
 		},
 	}
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			for key, value := range testCase.envValues {
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			for key, value := range tc.envValues {
 				t.Setenv(key, value)
 			}
 			config, err := New()
-			if (err != nil) != testCase.wantError {
+			if (err != nil) != tc.wantError {
 				t.Fatalf("New() error=%v", err)
 			}
-			if testCase.wantError {
+			if tc.wantError {
 				return
 			}
 			if config == nil {
 				t.Fatal("New() *Config=nil")
 			}
-			if config.ServerAddress != testCase.wantServerAddress {
-				t.Errorf("New().ServerAddress got=%s want=%s", config.ServerAddress, testCase.wantServerAddress)
+			if config.ServerAddress != tc.wantServerAddress {
+				t.Errorf("New().ServerAddress got=%s want=%s", config.ServerAddress, tc.wantServerAddress)
 			}
 		})
 	}
