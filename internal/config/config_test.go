@@ -43,13 +43,13 @@ func TestNew(t *testing.T) {
 			wantError:         true,
 		},
 	}
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			for key, value := range tc.envValues {
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			for key, value := range testCase.envValues {
 				t.Setenv(key, value)
 			}
 			config, err := New()
-			if tc.wantError {
+			if testCase.wantError {
 				if err == nil {
 					t.Fatal("New() error=nil")
 				}
@@ -64,8 +64,8 @@ func TestNew(t *testing.T) {
 			if config == nil {
 				t.Fatal("New() *Config=nil")
 			}
-			if config.ServerAddress != tc.wantServerAddress {
-				t.Errorf("New().ServerAddress got=%s want=%s", config.ServerAddress, tc.wantServerAddress)
+			if config.ServerAddress != testCase.wantServerAddress {
+				t.Errorf("New().ServerAddress got=%s want=%s", config.ServerAddress, testCase.wantServerAddress)
 			}
 		})
 	}
