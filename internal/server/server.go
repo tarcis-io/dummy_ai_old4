@@ -22,7 +22,10 @@ func (server *Server) ListenAndServe() error {
 	return http.ListenAndServe(server.address, server.handler)
 }
 
-func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData pageData) error {
+func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData pageData) {
 	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	return server.pageTemplate.Execute(responseWriter, pageData)
+	err := server.pageTemplate.Execute(responseWriter, pageData)
+	if err != nil {
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
 }
