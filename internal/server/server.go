@@ -1,15 +1,7 @@
 package server
 
-import (
-	"net/http"
-	"text/template"
-)
-
 type (
 	Server struct {
-		address      string
-		handler      *http.ServeMux
-		pageTemplate *template.Template
 	}
 
 	pageData struct {
@@ -18,46 +10,28 @@ type (
 	}
 )
 
-func (server *Server) ListenAndServe() error {
-	return http.ListenAndServe(server.address, server.handler)
-}
+const (
+	titleDefault = "DummyAI"
+)
 
-func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	pageData := &pageData{
-		Title:    "DummyAI",
+var (
+	homePageData = &pageData{
+		Title:    titleDefault,
 		WASMPath: "/wasm/home.wasm",
 	}
-	err := server.renderPage(responseWriter, pageData)
-	if err != nil {
-		server.error500Handler(responseWriter, request)
-	}
-}
 
-func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
-	responseWriter.WriteHeader(http.StatusNotFound)
-	pageData := &pageData{
-		Title:    "DummyAI",
+	aboutPageData = &pageData{
+		Title:    titleDefault,
+		WASMPath: "/wasm/about.wasm",
+	}
+
+	error404PageData = &pageData{
+		Title:    titleDefault,
 		WASMPath: "/wasm/error_404.wasm",
 	}
-	err := server.renderPage(responseWriter, pageData)
-	if err != nil {
-		server.error500Handler(responseWriter, request)
-	}
-}
 
-func (server *Server) error500Handler(responseWriter http.ResponseWriter, _ *http.Request) {
-	responseWriter.WriteHeader(http.StatusInternalServerError)
-	pageData := &pageData{
-		Title:    "DummyAI",
+	error500PageData = &pageData{
+		Title:    titleDefault,
 		WASMPath: "/wasm/error_500.wasm",
 	}
-	err := server.renderPage(responseWriter, pageData)
-	if err != nil {
-		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
-}
-
-func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
-	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	return server.pageTemplate.Execute(responseWriter, pageData)
-}
+)
