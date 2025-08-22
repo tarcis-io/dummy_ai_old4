@@ -1,7 +1,13 @@
 package server
 
+import (
+	"net/http"
+)
+
 type (
 	Server struct {
+		address  string
+		serveMux *http.ServeMux
 	}
 
 	pageData struct {
