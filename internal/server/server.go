@@ -33,6 +33,18 @@ func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *h
 	}
 }
 
+func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.WriteHeader(http.StatusNotFound)
+	pageData := &pageData{
+		Title:    "DummyAI",
+		WASMPath: "/wasm/error_404.wasm",
+	}
+	err := server.renderPage(responseWriter, pageData)
+	if err != nil {
+		server.error500Handler(responseWriter, request)
+	}
+}
+
 func (server *Server) error500Handler(responseWriter http.ResponseWriter, _ *http.Request) {
 	responseWriter.WriteHeader(http.StatusInternalServerError)
 	pageData := &pageData{
