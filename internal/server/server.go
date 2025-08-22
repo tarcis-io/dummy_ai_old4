@@ -16,6 +16,10 @@ type (
 	}
 )
 
+func (server *Server) ListenAndServe() error {
+	return http.ListenAndServe(server.address, server.serveMux)
+}
+
 const (
 	titleDefault = "DummyAI"
 )
