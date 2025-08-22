@@ -41,3 +41,11 @@ var (
 		WASMPath: "/wasm/error_500.wasm",
 	}
 )
+
+func New(address string) *Server {
+	server := &Server{
+		address:  address,
+		serveMux: http.NewServeMux(),
+	}
+	return server
+}
