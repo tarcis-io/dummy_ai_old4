@@ -28,6 +28,10 @@ func (server *Server) ListenAndServe() error {
 }
 
 func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	if request.URL.Path != "/" {
+		server.error404Handler(responseWriter, request)
+		return
+	}
 	err := server.renderPage(responseWriter, homePageData)
 	if err != nil {
 		server.error500Handler(responseWriter, request)
