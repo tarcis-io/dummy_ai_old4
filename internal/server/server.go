@@ -58,6 +58,7 @@ func (server *Server) error500Handler(responseWriter http.ResponseWriter, _ *htt
 }
 
 func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
+	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
 	return server.pageTemplate.Execute(responseWriter, pageData)
 }
 
