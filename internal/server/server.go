@@ -22,6 +22,20 @@ func (server *Server) ListenAndServe() error {
 	return http.ListenAndServe(server.address, server.serveMux)
 }
 
+func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	err := server.renderPage(responseWriter, homePageData)
+	if err != nil {
+		server.error500Handler(responseWriter, request)
+	}
+}
+
+func (server *Server) aboutHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	err := server.renderPage(responseWriter, aboutPageData)
+	if err != nil {
+		server.error500Handler(responseWriter, request)
+	}
+}
+
 func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.WriteHeader(http.StatusNotFound)
 	err := server.renderPage(responseWriter, error404PageData)
