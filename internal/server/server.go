@@ -2,6 +2,7 @@ package server
 
 import (
 	"embed"
+	"log/slog"
 	"net/http"
 	"text/template"
 )
@@ -11,6 +12,7 @@ type (
 		address      string
 		serveMux     *http.ServeMux
 		pageTemplate *template.Template
+		logger       *slog.Logger
 	}
 
 	pageData struct {
@@ -108,6 +110,7 @@ func New(address string) *Server {
 		address:      address,
 		serveMux:     http.NewServeMux(),
 		pageTemplate: pageTemplate,
+		logger:       slog.Default(),
 	}
 	server.registerHandler(homeRoute, server.homeHandler)
 	server.registerHandler(aboutRoute, server.aboutHandler)
