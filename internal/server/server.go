@@ -1,6 +1,7 @@
 package server
 
 import (
+	"embed"
 	"net/http"
 	"text/template"
 )
@@ -80,12 +81,18 @@ var (
 		Title:    titleDefault,
 		WASMPath: "/wasm/error_500.wasm",
 	}
+
+	//go:embed web/template/*.html
+	pageTemplateFS embed.FS
+
+	pageTemplate = template.Must(template.ParseFS(pageTemplateFS, "web/template/*.html"))
 )
 
 func New(address string) *Server {
 	server := &Server{
-		address:  address,
-		serveMux: http.NewServeMux(),
+		address:      address,
+		serveMux:     http.NewServeMux(),
+		pageTemplate: pageTemplate,
 	}
 	return server
 }
