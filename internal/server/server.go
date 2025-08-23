@@ -2,12 +2,14 @@ package server
 
 import (
 	"net/http"
+	"text/template"
 )
 
 type (
 	Server struct {
-		address  string
-		serveMux *http.ServeMux
+		address      string
+		serveMux     *http.ServeMux
+		pageTemplate *template.Template
 	}
 
 	pageData struct {
@@ -18,6 +20,10 @@ type (
 
 func (server *Server) ListenAndServe() error {
 	return http.ListenAndServe(server.address, server.serveMux)
+}
+
+func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
+	return server.pageTemplate.Execute(responseWriter, pageData)
 }
 
 const (
