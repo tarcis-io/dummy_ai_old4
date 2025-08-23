@@ -19,10 +19,6 @@ type (
 	}
 )
 
-func (server *Server) RegisterHandler(route string, handler func(http.ResponseWriter, *http.Request)) {
-	server.serveMux.HandleFunc(route, handler)
-}
-
 func (server *Server) ListenAndServe() error {
 	return http.ListenAndServe(server.address, server.serveMux)
 }
@@ -63,6 +59,11 @@ func (server *Server) error500Handler(responseWriter http.ResponseWriter, _ *htt
 
 func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
 	return server.pageTemplate.Execute(responseWriter, pageData)
+}
+
+func (server *Server) registerRoutes() {
+	server.serveMux.HandleFunc(homeRoute, server.homeHandler)
+	server.serveMux.HandleFunc(aboutRoute, server.aboutHandler)
 }
 
 const (
@@ -108,7 +109,6 @@ func New(address string) *Server {
 		serveMux:     http.NewServeMux(),
 		pageTemplate: pageTemplate,
 	}
-	server.RegisterHandler(homeRoute, server.homeHandler)
-	server.RegisterHandler(aboutRoute, server.aboutHandler)
+	server.registerRoutes()
 	return server
 }
