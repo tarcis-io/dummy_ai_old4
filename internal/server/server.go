@@ -22,6 +22,22 @@ func (server *Server) ListenAndServe() error {
 	return http.ListenAndServe(server.address, server.serveMux)
 }
 
+func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.WriteHeader(http.StatusNotFound)
+	err := server.renderPage(responseWriter, error404PageData)
+	if err != nil {
+		server.error500Handler(responseWriter, request)
+	}
+}
+
+func (server *Server) error500Handler(responseWriter http.ResponseWriter, _ *http.Request) {
+	responseWriter.WriteHeader(http.StatusInternalServerError)
+	err := server.renderPage(responseWriter, error500PageData)
+	if err != nil {
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
 func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
 	return server.pageTemplate.Execute(responseWriter, pageData)
 }
