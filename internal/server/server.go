@@ -62,6 +62,10 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 	return server.pageTemplate.Execute(responseWriter, pageData)
 }
 
+func (server *Server) registerHandler(route string, handler func(http.ResponseWriter, *http.Request)) {
+	server.serveMux.HandleFunc(route, handler)
+}
+
 const (
 	titleDefault     = "DummyAI"
 	homeRoute        = "/"
@@ -105,5 +109,7 @@ func New(address string) *Server {
 		serveMux:     http.NewServeMux(),
 		pageTemplate: pageTemplate,
 	}
+	server.registerHandler(homeRoute, server.homeHandler)
+	server.registerHandler(aboutRoute, server.aboutHandler)
 	return server
 }
