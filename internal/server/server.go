@@ -28,7 +28,7 @@ func (server *Server) ListenAndServe() error {
 }
 
 func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	if request.URL.Path != "/" {
+	if request.URL.Path != homeRoute {
 		server.error404Handler(responseWriter, request)
 		return
 	}
@@ -66,28 +66,34 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 }
 
 const (
-	titleDefault = "DummyAI"
+	titleDefault     = "DummyAI"
+	homeRoute        = "/"
+	homeWASMPath     = "/wasm/home.wasm"
+	aboutRoute       = "/about"
+	aboutWASMPath    = "/wasm/about.wasm"
+	error404WASMPath = "/wasm/error_404.wasm"
+	error500WASMPath = "/wasm/error_500.wasm"
 )
 
 var (
 	homePageData = &pageData{
 		Title:    titleDefault,
-		WASMPath: "/wasm/home.wasm",
+		WASMPath: homeWASMPath,
 	}
 
 	aboutPageData = &pageData{
 		Title:    titleDefault,
-		WASMPath: "/wasm/about.wasm",
+		WASMPath: aboutWASMPath,
 	}
 
 	error404PageData = &pageData{
 		Title:    titleDefault,
-		WASMPath: "/wasm/error_404.wasm",
+		WASMPath: error404WASMPath,
 	}
 
 	error500PageData = &pageData{
 		Title:    titleDefault,
-		WASMPath: "/wasm/error_500.wasm",
+		WASMPath: error500WASMPath,
 	}
 
 	//go:embed web/template/*.html
@@ -102,7 +108,7 @@ func New(address string) *Server {
 		serveMux:     http.NewServeMux(),
 		pageTemplate: pageTemplate,
 	}
-	server.RegisterHandler("/", server.homeHandler)
-	server.RegisterHandler("/about", server.aboutHandler)
+	server.RegisterHandler(homeRoute, server.homeHandler)
+	server.RegisterHandler(aboutRoute, server.aboutHandler)
 	return server
 }
