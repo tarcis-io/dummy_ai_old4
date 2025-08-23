@@ -19,6 +19,10 @@ type (
 	}
 )
 
+func (server *Server) RegisterHandler(route string, handler func(http.ResponseWriter, *http.Request)) {
+	server.serveMux.HandleFunc(route, handler)
+}
+
 func (server *Server) ListenAndServe() error {
 	return http.ListenAndServe(server.address, server.serveMux)
 }
@@ -94,5 +98,7 @@ func New(address string) *Server {
 		serveMux:     http.NewServeMux(),
 		pageTemplate: pageTemplate,
 	}
+	server.RegisterHandler("/", server.homeHandler)
+	server.RegisterHandler("/about", server.aboutHandler)
 	return server
 }
