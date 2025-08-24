@@ -1,6 +1,16 @@
 package server
 
+import (
+	"embed"
+	"text/template"
+)
+
 type (
+	Server struct {
+		address      string
+		pageTemplate *template.Template
+	}
+
 	pageData struct {
 		Title    string
 		WASMPath string
@@ -38,4 +48,17 @@ var (
 		Title:    titleDefault,
 		WASMPath: error500WASMPath,
 	}
+
+	//go:embed web/template/*.html
+	pageTemplateFS embed.FS
+
+	pageTemplate = template.Must(template.ParseFS(pageTemplateFS, "web/template/*.html"))
 )
+
+func New(address string) *Server {
+	server := &Server{
+		address:      address,
+		pageTemplate: pageTemplate,
+	}
+	return server
+}
