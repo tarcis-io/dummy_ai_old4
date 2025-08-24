@@ -41,7 +41,7 @@ func (server *Server) aboutHandler(responseWriter http.ResponseWriter, request *
 	}
 }
 
-func (server *Server) rootHandler(responseWriter http.ResponseWriter, request *http.Request) {
+func (server *Server) catchAllHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodGet {
 		server.logger.ErrorContext(request.Context(), "Method not allowed", "method", request.Method)
 		http.Error(responseWriter, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
@@ -76,16 +76,16 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 func (server *Server) registerHandlers() {
 	server.serveMux.HandleFunc(homePath, server.homeHandler)
 	server.serveMux.HandleFunc(aboutPath, server.aboutHandler)
-	server.serveMux.HandleFunc(rootPath, server.rootHandler)
+	server.serveMux.HandleFunc(catchAllPath, server.catchAllHandler)
 }
 
 const (
 	titleDefault     = "DummyAI"
-	rootPath         = "/"
 	homePath         = "GET /"
 	homeWASMPath     = "/wasm/home.wasm"
 	aboutPath        = "GET /about"
 	aboutWASMPath    = "/wasm/about.wasm"
+	catchAllPath     = "/"
 	error404WASMPath = "/wasm/error_404.wasm"
 	error500WASMPath = "/wasm/error_500.wasm"
 )
