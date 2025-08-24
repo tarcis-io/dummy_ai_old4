@@ -21,6 +21,15 @@ type (
 	}
 )
 
+func (server *Server) error500Handler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.WriteHeader(http.StatusInternalServerError)
+	err := server.renderPage(responseWriter, error500PageData)
+	if err != nil {
+		server.logger.ErrorContext(request.Context(), "failed to render error 500 page", "error", err)
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
 func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
 	responseWriter.Header().Set("Content-Type", "text/html; chatset=UTF-8")
 	return server.pageTemplate.Execute(responseWriter, pageData)
