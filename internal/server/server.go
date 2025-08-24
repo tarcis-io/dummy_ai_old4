@@ -2,13 +2,17 @@ package server
 
 import (
 	"embed"
+	"log/slog"
+	"net/http"
 	"text/template"
 )
 
 type (
 	Server struct {
 		address      string
+		serveMux     *http.ServeMux
 		pageTemplate *template.Template
+		logger       *slog.Logger
 	}
 
 	pageData struct {
@@ -16,6 +20,9 @@ type (
 		WASMPath string
 	}
 )
+
+func (server *Server) registerHandlers() {
+}
 
 const (
 	titleDefault     = "DummyAI"
@@ -58,7 +65,10 @@ var (
 func New(address string) *Server {
 	server := &Server{
 		address:      address,
+		serveMux:     http.NewServeMux(),
 		pageTemplate: pageTemplate,
+		logger:       slog.Default(),
 	}
+	server.registerHandlers()
 	return server
 }
