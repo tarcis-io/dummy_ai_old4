@@ -21,6 +21,16 @@ type (
 	}
 )
 
+func (server *Server) createHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
+	return func(responseWriter http.ResponseWriter, request *http.Request) {
+		err := server.renderPage(responseWriter, pageData)
+		if err != nil {
+			server.logger.ErrorContext(request.Context(), "failed to render page", "path", request.URL.Path, "error", err)
+			server.error500Handler(responseWriter, request)
+		}
+	}
+}
+
 func (server *Server) catchAllHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodGet {
 		server.logger.ErrorContext(request.Context(), "method not allowed", "path", request.URL.Path, "method", request.Method)
@@ -54,6 +64,8 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 }
 
 func (server *Server) registerHandlers() {
+	server.serveMux.HandleFunc(homePath, server.createHandler(homePageData))
+	server.serveMux.HandleFunc(aboutPath, server.createHandler(aboutPageData))
 	server.serveMux.HandleFunc(catchAllPath, server.catchAllHandler)
 }
 
