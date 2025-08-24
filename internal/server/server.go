@@ -23,7 +23,7 @@ type (
 
 func (server *Server) catchAllHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.Method != http.MethodGet {
-		server.logger.ErrorContext(request.Context(), "method not allowed", "method", request.Method)
+		server.logger.ErrorContext(request.Context(), "method not allowed", "path", request.URL.Path, "method", request.Method)
 		http.Error(responseWriter, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 		return
 	}
@@ -34,7 +34,7 @@ func (server *Server) error404Handler(responseWriter http.ResponseWriter, reques
 	responseWriter.WriteHeader(http.StatusNotFound)
 	err := server.renderPage(responseWriter, error404PageData)
 	if err != nil {
-		server.logger.ErrorContext(request.Context(), "failed to render error 404 page", "error", err)
+		server.logger.ErrorContext(request.Context(), "failed to render error 404 page", "path", request.URL.Path, "error", err)
 		server.error500Handler(responseWriter, request)
 	}
 }
@@ -43,7 +43,7 @@ func (server *Server) error500Handler(responseWriter http.ResponseWriter, reques
 	responseWriter.WriteHeader(http.StatusInternalServerError)
 	err := server.renderPage(responseWriter, error500PageData)
 	if err != nil {
-		server.logger.ErrorContext(request.Context(), "failed to render error 500 page", "error", err)
+		server.logger.ErrorContext(request.Context(), "failed to render error 500 page", "path", request.URL.Path, "error", err)
 		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 }
