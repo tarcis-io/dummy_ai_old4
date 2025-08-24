@@ -27,6 +27,7 @@ func (server *Server) ListenAndServe() error {
 
 func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.URL.Path != homeRoute {
+		server.logger.Error("Route not found", "route", request.URL.Path)
 		server.error404Handler(responseWriter, request)
 		return
 	}
