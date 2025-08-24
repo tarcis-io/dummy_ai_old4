@@ -26,7 +26,7 @@ func (server *Server) ListenAndServe() error {
 }
 
 func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	if request.URL.Path != homeRoute {
+	if request.URL.Path != homePath {
 		server.logger.ErrorContext(request.Context(), "Route not found", "route", request.URL.Path)
 		server.error404Handler(responseWriter, request)
 		return
@@ -44,6 +44,15 @@ func (server *Server) aboutHandler(responseWriter http.ResponseWriter, request *
 		server.logger.ErrorContext(request.Context(), "Failed to render about page", "error", err)
 		server.error500Handler(responseWriter, request)
 	}
+}
+
+func (server *Server) rootHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodGet {
+		server.logger.ErrorContext(request.Context(), "Method not allowed", "method", request.Method)
+		http.Error(responseWriter, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+	server.error404Handler(responseWriter, request)
 }
 
 func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
@@ -70,15 +79,17 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 }
 
 func (server *Server) registerHandlers() {
-	server.serveMux.HandleFunc(homeRoute, server.homeHandler)
-	server.serveMux.HandleFunc(aboutRoute, server.aboutHandler)
+	server.serveMux.HandleFunc(homePath, server.homeHandler)
+	server.serveMux.HandleFunc(aboutPath, server.aboutHandler)
+	server.serveMux.HandleFunc(rootPath, server.rootHandler)
 }
 
 const (
 	titleDefault     = "DummyAI"
-	homeRoute        = "/"
+	rootPath         = "/"
+	homePath         = "GET /"
 	homeWASMPath     = "/wasm/home.wasm"
-	aboutRoute       = "/about"
+	aboutPath        = "GET /about"
 	aboutWASMPath    = "/wasm/about.wasm"
 	error404WASMPath = "/wasm/error_404.wasm"
 	error500WASMPath = "/wasm/error_500.wasm"
