@@ -21,6 +21,11 @@ type (
 	}
 )
 
+func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
+	responseWriter.Header().Set("Content-Type", "text/html; chatset=UTF-8")
+	return server.pageTemplate.Execute(responseWriter, pageData)
+}
+
 func (server *Server) registerHandlers() {
 }
 
