@@ -69,8 +69,9 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 	return server.pageTemplate.Execute(responseWriter, pageData)
 }
 
-func (server *Server) registerHandler(route string, handler func(http.ResponseWriter, *http.Request)) {
-	server.serveMux.HandleFunc(route, handler)
+func (server *Server) registerHandlers() {
+	server.serveMux.HandleFunc(homeRoute, server.homeHandler)
+	server.serveMux.HandleFunc(aboutRoute, server.aboutHandler)
 }
 
 const (
@@ -117,7 +118,6 @@ func New(address string) *Server {
 		pageTemplate: pageTemplate,
 		logger:       slog.Default(),
 	}
-	server.registerHandler(homeRoute, server.homeHandler)
-	server.registerHandler(aboutRoute, server.aboutHandler)
+	server.registerHandlers()
 	return server
 }
