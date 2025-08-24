@@ -26,11 +26,6 @@ func (server *Server) ListenAndServe() error {
 }
 
 func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	if request.URL.Path != homePath {
-		server.logger.ErrorContext(request.Context(), "Route not found", "route", request.URL.Path)
-		server.error404Handler(responseWriter, request)
-		return
-	}
 	err := server.renderPage(responseWriter, homePageData)
 	if err != nil {
 		server.logger.ErrorContext(request.Context(), "Failed to render home page", "error", err)
