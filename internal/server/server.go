@@ -21,6 +21,15 @@ type (
 	}
 )
 
+func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.WriteHeader(http.StatusNotFound)
+	err := server.renderPage(responseWriter, error404PageData)
+	if err != nil {
+		server.logger.ErrorContext(request.Context(), "failed to render error 404 page", "error", err)
+		server.error500Handler(responseWriter, request)
+	}
+}
+
 func (server *Server) error500Handler(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.WriteHeader(http.StatusInternalServerError)
 	err := server.renderPage(responseWriter, error500PageData)
