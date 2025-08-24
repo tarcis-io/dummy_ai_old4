@@ -21,6 +21,15 @@ type (
 	}
 )
 
+func (server *Server) catchAllHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodGet {
+		server.logger.ErrorContext(request.Context(), "method not allowed", "method", request.Method)
+		http.Error(responseWriter, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+	server.error404Handler(responseWriter, request)
+}
+
 func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.WriteHeader(http.StatusNotFound)
 	err := server.renderPage(responseWriter, error404PageData)
@@ -45,6 +54,7 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 }
 
 func (server *Server) registerHandlers() {
+	server.serveMux.HandleFunc(catchAllPath, server.catchAllHandler)
 }
 
 const (
