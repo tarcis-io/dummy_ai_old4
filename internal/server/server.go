@@ -27,13 +27,13 @@ func (server *Server) ListenAndServe() error {
 
 func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	if request.URL.Path != homeRoute {
-		server.logger.Error("Route not found", "route", request.URL.Path)
+		server.logger.ErrorContext(request.Context(), "Route not found", "route", request.URL.Path)
 		server.error404Handler(responseWriter, request)
 		return
 	}
 	err := server.renderPage(responseWriter, homePageData)
 	if err != nil {
-		server.logger.Error("Failed to render home page", "error", err)
+		server.logger.ErrorContext(request.Context(), "Failed to render home page", "error", err)
 		server.error500Handler(responseWriter, request)
 	}
 }
@@ -41,7 +41,7 @@ func (server *Server) homeHandler(responseWriter http.ResponseWriter, request *h
 func (server *Server) aboutHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	err := server.renderPage(responseWriter, aboutPageData)
 	if err != nil {
-		server.logger.Error("Failed to render about page", "error", err)
+		server.logger.ErrorContext(request.Context(), "Failed to render about page", "error", err)
 		server.error500Handler(responseWriter, request)
 	}
 }
@@ -50,16 +50,16 @@ func (server *Server) error404Handler(responseWriter http.ResponseWriter, reques
 	responseWriter.WriteHeader(http.StatusNotFound)
 	err := server.renderPage(responseWriter, error404PageData)
 	if err != nil {
-		server.logger.Error("Failed to render 404 page", "error", err)
+		server.logger.ErrorContext(request.Context(), "Failed to render 404 page", "error", err)
 		server.error500Handler(responseWriter, request)
 	}
 }
 
-func (server *Server) error500Handler(responseWriter http.ResponseWriter, _ *http.Request) {
+func (server *Server) error500Handler(responseWriter http.ResponseWriter, request *http.Request) {
 	responseWriter.WriteHeader(http.StatusInternalServerError)
 	err := server.renderPage(responseWriter, error500PageData)
 	if err != nil {
-		server.logger.Error("Failed to render 500 page", "error", err)
+		server.logger.ErrorContext(request.Context(), "Failed to render 500 page", "error", err)
 		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 	}
 }
