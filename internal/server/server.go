@@ -9,8 +9,11 @@ type (
 
 const (
 	titleDefault     = "DummyAI"
+	homePath         = "GET /"
 	homeWASMPath     = "/wasm/home.wasm"
+	aboutPath        = "GET /about"
 	aboutWASMPath    = "/wasm/about.wasm"
+	catchAllPath     = "/"
 	error404WASMPath = "/wasm/error_404.wasm"
 	error500WASMPath = "/wasm/error_500.wasm"
 )
