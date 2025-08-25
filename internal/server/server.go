@@ -109,20 +109,4 @@ var (
 
 	//go:embed web/template/*.html
 	pageTemplateFS embed.FS
-
-	pageTemplate = template.Must(template.ParseFS(pageTemplateFS, "web/template/*.html"))
 )
-
-func New(address string, logger *slog.Logger) *Server {
-	if logger == nil {
-		logger = slog.Default()
-	}
-	server := &Server{
-		address:      address,
-		serveMux:     http.NewServeMux(),
-		pageTemplate: pageTemplate,
-		logger:       logger,
-	}
-	server.registerHandlers()
-	return server
-}
