@@ -8,16 +8,16 @@ type (
 )
 
 const (
-	pageDataTitleDefault = "DummyAI"
-	homePagePath         = "GET /"
-	homePageWASMPath     = "/wasm/home.wasm"
-	aboutPagePath        = "GET /about"
-	aboutPageWASMPath    = "/wasm/about.wasm"
+	pageDataTitleDefault  = "DummyAI"
+	homePagePath          = "GET /"
+	homePageDataWASMPath  = "/wasm/home.wasm"
+	aboutPagePath         = "GET /about"
+	aboutPageDataWASMPath = "/wasm/about.wasm"
 )
 
 var (
-	homePageData  = newPageData(homePageWASMPath)
-	aboutPageData = newPageData(aboutPageWASMPath)
+	homePageData  = newPageData(homePageDataWASMPath)
+	aboutPageData = newPageData(aboutPageDataWASMPath)
 
 	pageRoutes = map[string]*pageData{
 		homePagePath:  homePageData,
