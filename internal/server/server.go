@@ -9,9 +9,9 @@ type (
 
 const (
 	pageDataTitleDefault  = "DummyAI"
-	homePagePath          = "GET /"
+	homePageRoutePath     = "GET /"
 	homePageDataWASMPath  = "/wasm/home.wasm"
-	aboutPagePath         = "GET /about"
+	aboutPageRoutePath    = "GET /about"
 	aboutPageDataWASMPath = "/wasm/about.wasm"
 )
 
@@ -20,8 +20,8 @@ var (
 	aboutPageData = newPageData(aboutPageDataWASMPath)
 
 	pageRoutes = map[string]*pageData{
-		homePagePath:  homePageData,
-		aboutPagePath: aboutPageData,
+		homePageRoutePath:  homePageData,
+		aboutPageRoutePath: aboutPageData,
 	}
 )
 
