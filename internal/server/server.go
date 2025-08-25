@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"embed"
 	"log/slog"
 	"net/http"
@@ -21,52 +22,18 @@ type (
 	}
 )
 
-func (server *Server) createHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
-	return func(responseWriter http.ResponseWriter, request *http.Request) {
-		err := server.renderPage(responseWriter, pageData)
-		if err != nil {
-			server.logger.ErrorContext(request.Context(), "failed to render page", "path", request.URL.Path, "error", err)
-			server.error500Handler(responseWriter, request)
-		}
-	}
-}
-
-func (server *Server) catchAllHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	if request.Method != http.MethodGet {
-		server.logger.ErrorContext(request.Context(), "method not allowed", "path", request.URL.Path, "method", request.Method)
-		http.Error(responseWriter, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
-		return
-	}
-	server.error404Handler(responseWriter, request)
-}
-
-func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
-	responseWriter.WriteHeader(http.StatusNotFound)
-	err := server.renderPage(responseWriter, error404PageData)
-	if err != nil {
-		server.logger.ErrorContext(request.Context(), "failed to render error 404 page", "path", request.URL.Path, "error", err)
-		server.error500Handler(responseWriter, request)
-	}
-}
-
-func (server *Server) error500Handler(responseWriter http.ResponseWriter, request *http.Request) {
-	responseWriter.WriteHeader(http.StatusInternalServerError)
-	err := server.renderPage(responseWriter, error500PageData)
-	if err != nil {
-		server.logger.ErrorContext(request.Context(), "failed to render error 500 page", "path", request.URL.Path, "error", err)
-		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
-}
-
 func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
+	var buffer bytes.Buffer
+	err := server.pageTemplate.Execute(&buffer, pageData)
+	if err != nil {
+		return err
+	}
 	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	return server.pageTemplate.Execute(responseWriter, pageData)
+	buffer.WriteTo(responseWriter)
+	return nil
 }
 
 func (server *Server) registerHandlers() {
-	server.serveMux.HandleFunc(homePath, server.createHandler(homePageData))
-	server.serveMux.HandleFunc(aboutPath, server.createHandler(aboutPageData))
-	server.serveMux.HandleFunc(catchAllPath, server.catchAllHandler)
 }
 
 const (
