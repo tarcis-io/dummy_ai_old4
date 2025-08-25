@@ -30,6 +30,9 @@ const (
 )
 
 var (
+	//go:embed web/*
+	webFS embed.FS
+
 	homePageData  = newPageData(homePageDataWASMPath)
 	aboutPageData = newPageData(aboutPageDataWASMPath)
 
@@ -37,9 +40,6 @@ var (
 		homePageRoutePath:  homePageData,
 		aboutPageRoutePath: aboutPageData,
 	}
-
-	//go:embed web/*
-	webFS embed.FS
 )
 
 func New(address string, logger *slog.Logger) (*Server, error) {
