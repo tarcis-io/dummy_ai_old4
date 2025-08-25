@@ -1,8 +1,13 @@
 package server
 
+import (
+	"net/http"
+)
+
 type (
 	Server struct {
-		address string
+		address  string
+		serveMux *http.ServeMux
 	}
 
 	pageData struct {
@@ -31,7 +36,8 @@ var (
 
 func New(address string) (*Server, error) {
 	server := &Server{
-		address: address,
+		address:  address,
+		serveMux: http.NewServeMux(),
 	}
 	return server, nil
 }
