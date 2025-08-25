@@ -2,6 +2,7 @@ package server
 
 import (
 	"embed"
+	"log/slog"
 	"net/http"
 	"text/template"
 )
@@ -11,6 +12,7 @@ type (
 		address      string
 		serveMux     *http.ServeMux
 		pageTemplate *template.Template
+		logger       *slog.Logger
 	}
 
 	pageData struct {
@@ -40,15 +42,19 @@ var (
 	webFS embed.FS
 )
 
-func New(address string) (*Server, error) {
+func New(address string, logger *slog.Logger) (*Server, error) {
 	pageTemplate, err := template.ParseFS(webFS, "web/template/*.html")
 	if err != nil {
 		return nil, err
+	}
+	if logger == nil {
+		logger = slog.Default()
 	}
 	server := &Server{
 		address:      address,
 		serveMux:     http.NewServeMux(),
 		pageTemplate: pageTemplate,
+		logger:       logger,
 	}
 	return server, nil
 }
