@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bytes"
 	"embed"
 	"log/slog"
 	"net/http"
@@ -57,6 +58,17 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 		logger:       logger,
 	}
 	return server, nil
+}
+
+func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData, statusCode int) error {
+	var buffer bytes.Buffer
+	err := server.pageTemplate.Execute(&buffer, pageData)
+	if err != nil {
+		return err
+	}
+	responseWriter.WriteHeader(statusCode)
+	buffer.WriteTo(responseWriter)
+	return nil
 }
 
 func newPageData(wasmPath string) *pageData {
