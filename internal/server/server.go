@@ -60,7 +60,7 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 	return server, nil
 }
 
-func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData, statusCode int) error {
+func (server *Server) renderPage(responseWriter http.ResponseWriter, request *http.Request, pageData *pageData, statusCode int) error {
 	var buffer bytes.Buffer
 	err := server.pageTemplate.Execute(&buffer, pageData)
 	if err != nil {
@@ -70,6 +70,7 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 	responseWriter.WriteHeader(statusCode)
 	_, err = buffer.WriteTo(responseWriter)
 	if err != nil {
+		server.logger.WarnContext(request.Context(), "failed to write response", "path", request.URL.Path, "error", err)
 	}
 	return nil
 }
