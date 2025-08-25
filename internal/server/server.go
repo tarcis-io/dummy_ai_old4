@@ -22,6 +22,22 @@ type (
 	}
 )
 
+func (server *Server) error404Handler(responseWriter http.ResponseWriter, request *http.Request) {
+	err := server.renderPage(responseWriter, error404PageData, http.StatusNotFound)
+	if err != nil {
+		server.logger.ErrorContext(request.Context(), "failed to render error 404 page", "path", request.URL.Path, "error", err)
+		server.error500Handler(responseWriter, request)
+	}
+}
+
+func (server *Server) error500Handler(responseWriter http.ResponseWriter, request *http.Request) {
+	err := server.renderPage(responseWriter, error500PageData, http.StatusInternalServerError)
+	if err != nil {
+		server.logger.ErrorContext(request.Context(), "failed to render error 500 page", "path", request.URL.Path, "error", err)
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
 func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData, statusCode int) error {
 	var buffer bytes.Buffer
 	err := server.pageTemplate.Execute(&buffer, pageData)
