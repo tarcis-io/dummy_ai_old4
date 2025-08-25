@@ -22,13 +22,14 @@ type (
 	}
 )
 
-func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData) error {
+func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *pageData, statusCode int) error {
 	var buffer bytes.Buffer
 	err := server.pageTemplate.Execute(&buffer, pageData)
 	if err != nil {
 		return err
 	}
 	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
+	responseWriter.WriteHeader(statusCode)
 	buffer.WriteTo(responseWriter)
 	return nil
 }
