@@ -66,8 +66,11 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, pageData *p
 	if err != nil {
 		return err
 	}
+	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
 	responseWriter.WriteHeader(statusCode)
-	buffer.WriteTo(responseWriter)
+	_, err = buffer.WriteTo(responseWriter)
+	if err != nil {
+	}
 	return nil
 }
 
