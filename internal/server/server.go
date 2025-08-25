@@ -22,6 +22,60 @@ type (
 	}
 )
 
+const (
+	titleDefault     = "DummyAI"
+	homePath         = "GET /"
+	homeWASMPath     = "/wasm/home.wasm"
+	aboutPath        = "GET /about"
+	aboutWASMPath    = "/wasm/about.wasm"
+	catchAllPath     = "/"
+	error404WASMPath = "/wasm/error_404.wasm"
+	error500WASMPath = "/wasm/error_500.wasm"
+)
+
+var (
+	homePageData = &pageData{
+		Title:    titleDefault,
+		WASMPath: homeWASMPath,
+	}
+
+	aboutPageData = &pageData{
+		Title:    titleDefault,
+		WASMPath: aboutWASMPath,
+	}
+
+	error404PageData = &pageData{
+		Title:    titleDefault,
+		WASMPath: error404WASMPath,
+	}
+
+	error500PageData = &pageData{
+		Title:    titleDefault,
+		WASMPath: error500WASMPath,
+	}
+
+	//go:embed web/template/*.html
+	pageTemplateFS embed.FS
+)
+
+func New(address string, logger *slog.Logger) (*Server, error) {
+	pageTemplate, err := template.ParseFS(pageTemplateFS, "web/template/*.html")
+	if err != nil {
+		return nil, err
+	}
+	if logger == nil {
+		logger = slog.Default()
+	}
+	server := &Server{
+		address:      address,
+		serveMux:     http.NewServeMux(),
+		pageTemplate: pageTemplate,
+		logger:       logger,
+	}
+	server.registerHandlers()
+	return server, nil
+}
+
 func (server *Server) createPageHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
 		err := server.renderPage(responseWriter, pageData, http.StatusOK)
@@ -74,39 +128,3 @@ func (server *Server) registerHandlers() {
 	server.serveMux.HandleFunc(aboutPath, server.createPageHandler(aboutPageData))
 	server.serveMux.HandleFunc(catchAllPath, server.catchAllHandler)
 }
-
-const (
-	titleDefault     = "DummyAI"
-	homePath         = "GET /"
-	homeWASMPath     = "/wasm/home.wasm"
-	aboutPath        = "GET /about"
-	aboutWASMPath    = "/wasm/about.wasm"
-	catchAllPath     = "/"
-	error404WASMPath = "/wasm/error_404.wasm"
-	error500WASMPath = "/wasm/error_500.wasm"
-)
-
-var (
-	homePageData = &pageData{
-		Title:    titleDefault,
-		WASMPath: homeWASMPath,
-	}
-
-	aboutPageData = &pageData{
-		Title:    titleDefault,
-		WASMPath: aboutWASMPath,
-	}
-
-	error404PageData = &pageData{
-		Title:    titleDefault,
-		WASMPath: error404WASMPath,
-	}
-
-	error500PageData = &pageData{
-		Title:    titleDefault,
-		WASMPath: error500WASMPath,
-	}
-
-	//go:embed web/template/*.html
-	pageTemplateFS embed.FS
-)
