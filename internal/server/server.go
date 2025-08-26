@@ -30,6 +30,7 @@ const (
 	aboutPageWASMPath    = "/wasm/about.wasm"
 	error404PageWASMPath = "/wasm/error_404.wasm"
 	error500PageWASMPath = "/wasm/error_500.wasm"
+	rootPath             = "/"
 )
 
 var (
@@ -69,6 +70,7 @@ func (server *Server) registerHandlers() {
 	for path, pageData := range pageRoutes {
 		server.serveMux.HandleFunc(path, server.makePageHandler(pageData))
 	}
+	server.serveMux.HandleFunc(rootPath, server.rootHandler)
 }
 
 func (server *Server) makePageHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
@@ -110,6 +112,15 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, request *ht
 		server.logger.WarnContext(request.Context(), "failed to write response", "path", request.URL.Path, "error", err)
 	}
 	return nil
+}
+
+func (server *Server) rootHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodGet {
+		server.logger.ErrorContext(request.Context(), "method not allowed", "path", request.URL.Path, "method", request.Method)
+		http.Error(responseWriter, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+	server.error404PageHandler(responseWriter, request)
 }
 
 func newPageData(wasmPath string) *pageData {
