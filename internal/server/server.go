@@ -23,24 +23,19 @@ type (
 )
 
 const (
-	pageTitleDefault     = "DummyAI"
-	homePagePath         = "GET /"
-	homePageWASMPath     = "/wasm/home.wasm"
-	aboutPagePath        = "GET /about"
-	aboutPageWASMPath    = "/wasm/about.wasm"
-	error404PageWASMPath = "/wasm/error_404.wasm"
-	error500PageWASMPath = "/wasm/error_500.wasm"
-	rootPath             = "/"
+	pageTitleDefault  = "DummyAI"
+	homePagePath      = "GET /"
+	homePageWASMPath  = "/wasm/home.wasm"
+	aboutPagePath     = "GET /about"
+	aboutPageWASMPath = "/wasm/about.wasm"
 )
 
 var (
 	//go:embed web/*
 	webFS embed.FS
 
-	homePageData     = newPageData(homePageWASMPath)
-	aboutPageData    = newPageData(aboutPageWASMPath)
-	error404PageData = newPageData(error404PageWASMPath)
-	error500PageData = newPageData(error500PageWASMPath)
+	homePageData  = newPageData(homePageWASMPath)
+	aboutPageData = newPageData(aboutPageWASMPath)
 
 	pageRoutes = map[string]*pageData{
 		homePagePath:  homePageData,
@@ -70,33 +65,23 @@ func (server *Server) registerHandlers() {
 	for path, pageData := range pageRoutes {
 		server.serveMux.HandleFunc(path, server.makePageHandler(pageData))
 	}
-	server.serveMux.HandleFunc(rootPath, server.error404PageHandler)
 }
 
 func (server *Server) makePageHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
-		server.renderPage(responseWriter, request, pageData, http.StatusOK)
+		server.renderPage(responseWriter, request, pageData)
 	}
 }
 
-func (server *Server) error404PageHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	server.renderPage(responseWriter, request, error404PageData, http.StatusNotFound)
-}
-
-func (server *Server) renderPage(responseWriter http.ResponseWriter, request *http.Request, pageData *pageData, statusCode int) {
+func (server *Server) renderPage(responseWriter http.ResponseWriter, request *http.Request, pageData *pageData) {
 	var buffer bytes.Buffer
 	err := server.pageTemplate.Execute(&buffer, pageData)
 	if err != nil {
 		server.logger.ErrorContext(request.Context(), "failed to render page", "path", request.URL.Path, "error", err)
-		if statusCode == http.StatusInternalServerError {
-			http.Error(responseWriter, http.StatusText(statusCode), statusCode)
-			return
-		}
-		server.renderPage(responseWriter, request, error500PageData, http.StatusInternalServerError)
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
-	responseWriter.WriteHeader(statusCode)
 	_, err = buffer.WriteTo(responseWriter)
 	if err != nil {
 		server.logger.WarnContext(request.Context(), "failed to write response", "path", request.URL.Path, "error", err)
