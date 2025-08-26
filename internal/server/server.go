@@ -61,6 +61,7 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 		pageTemplate: pageTemplate,
 		logger:       logger,
 	}
+	server.registerHandlers()
 	return server, nil
 }
 
