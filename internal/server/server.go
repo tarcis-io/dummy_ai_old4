@@ -64,6 +64,14 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 	return server, nil
 }
 
+func (server *Server) error500PageHandler(responseWriter http.ResponseWriter, request *http.Request) {
+	err := server.renderPage(responseWriter, request, error500PageData, http.StatusInternalServerError)
+	if err != nil {
+		server.logger.ErrorContext(request.Context(), "failed to render error 500 page", "path", request.URL.Path, "error", err)
+		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+	}
+}
+
 func (server *Server) renderPage(responseWriter http.ResponseWriter, request *http.Request, pageData *pageData, statusCode int) error {
 	var buffer bytes.Buffer
 	err := server.pageTemplate.Execute(&buffer, pageData)
