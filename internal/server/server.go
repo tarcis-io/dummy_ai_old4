@@ -103,6 +103,7 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, request *ht
 	var buffer bytes.Buffer
 	err := server.pageTemplate.Execute(&buffer, pageData)
 	if err != nil {
+		server.logger.ErrorContext(request.Context(), "failed to render page", "path", request.URL.Path, "error", err)
 		return err
 	}
 	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
