@@ -23,23 +23,27 @@ type (
 )
 
 const (
-	pageDataTitleDefault  = "DummyAI"
-	homePageRoutePath     = "GET /"
-	homePageDataWASMPath  = "/wasm/home.wasm"
-	aboutPageRoutePath    = "GET /about"
-	aboutPageDataWASMPath = "/wasm/about.wasm"
+	pageTitleDefault     = "DummyAI"
+	homePagePath         = "GET /"
+	homePageWASMPath     = "/wasm/home.wasm"
+	aboutPagePath        = "GET /about"
+	aboutPageWASMPath    = "/wasm/about.wasm"
+	error404PageWASMPath = "/wasm/error_404.wasm"
+	error500PageWASMPath = "/wasm/error_500.wasm"
 )
 
 var (
 	//go:embed web/*
 	webFS embed.FS
 
-	homePageData  = newPageData(homePageDataWASMPath)
-	aboutPageData = newPageData(aboutPageDataWASMPath)
+	homePageData     = newPageData(homePageWASMPath)
+	aboutPageData    = newPageData(aboutPageWASMPath)
+	error404PageData = newPageData(error404PageWASMPath)
+	error500PageData = newPageData(error500PageWASMPath)
 
 	pageRoutes = map[string]*pageData{
-		homePageRoutePath:  homePageData,
-		aboutPageRoutePath: aboutPageData,
+		homePagePath:  homePageData,
+		aboutPagePath: aboutPageData,
 	}
 )
 
@@ -77,7 +81,7 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, request *ht
 
 func newPageData(wasmPath string) *pageData {
 	pageData := &pageData{
-		Title:    pageDataTitleDefault,
+		Title:    pageTitleDefault,
 		WASMPath: wasmPath,
 	}
 	return pageData
