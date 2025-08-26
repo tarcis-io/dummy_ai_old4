@@ -75,36 +75,25 @@ func (server *Server) registerHandlers() {
 
 func (server *Server) makePageHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
-		err := server.renderPage(responseWriter, request, pageData, http.StatusOK)
-		if err != nil {
-			server.logger.ErrorContext(request.Context(), "failed to render page", "path", request.URL.Path, "error", err)
-			server.error500PageHandler(responseWriter, request)
-		}
+		server.renderPage(responseWriter, request, pageData, http.StatusOK)
 	}
 }
 
 func (server *Server) error404PageHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	err := server.renderPage(responseWriter, request, error404PageData, http.StatusNotFound)
-	if err != nil {
-		server.logger.ErrorContext(request.Context(), "failed to render error 404 page", "path", request.URL.Path, "error", err)
-		server.error500PageHandler(responseWriter, request)
-	}
+	server.renderPage(responseWriter, request, error404PageData, http.StatusNotFound)
 }
 
-func (server *Server) error500PageHandler(responseWriter http.ResponseWriter, request *http.Request) {
-	err := server.renderPage(responseWriter, request, error500PageData, http.StatusInternalServerError)
-	if err != nil {
-		server.logger.ErrorContext(request.Context(), "failed to render error 500 page", "path", request.URL.Path, "error", err)
-		http.Error(responseWriter, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-	}
-}
-
-func (server *Server) renderPage(responseWriter http.ResponseWriter, request *http.Request, pageData *pageData, statusCode int) error {
+func (server *Server) renderPage(responseWriter http.ResponseWriter, request *http.Request, pageData *pageData, statusCode int) {
 	var buffer bytes.Buffer
 	err := server.pageTemplate.Execute(&buffer, pageData)
 	if err != nil {
 		server.logger.ErrorContext(request.Context(), "failed to render page", "path", request.URL.Path, "error", err)
-		return err
+		if statusCode == http.StatusInternalServerError {
+			http.Error(responseWriter, http.StatusText(statusCode), statusCode)
+			return
+		}
+		server.renderPage(responseWriter, request, error500PageData, http.StatusInternalServerError)
+		return
 	}
 	responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
 	responseWriter.WriteHeader(statusCode)
@@ -112,7 +101,6 @@ func (server *Server) renderPage(responseWriter http.ResponseWriter, request *ht
 	if err != nil {
 		server.logger.WarnContext(request.Context(), "failed to write response", "path", request.URL.Path, "error", err)
 	}
-	return nil
 }
 
 func newPageData(wasmPath string) *pageData {
