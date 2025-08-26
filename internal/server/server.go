@@ -64,6 +64,12 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 	return server, nil
 }
 
+func (server *Server) registerHandlers() {
+	for path, pageData := range pageRoutes {
+		server.serveMux.HandleFunc(path, server.makePageHandler(pageData))
+	}
+}
+
 func (server *Server) makePageHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
 	return func(responseWriter http.ResponseWriter, request *http.Request) {
 		err := server.renderPage(responseWriter, request, pageData, http.StatusOK)
