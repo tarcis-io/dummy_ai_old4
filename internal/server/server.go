@@ -64,6 +64,16 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 	return server, nil
 }
 
+func (server *Server) makePageHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
+	return func(responseWriter http.ResponseWriter, request *http.Request) {
+		err := server.renderPage(responseWriter, request, pageData, http.StatusOK)
+		if err != nil {
+			server.logger.ErrorContext(request.Context(), "failed to render page", "path", request.URL.Path, "error", err)
+			server.error500PageHandler(responseWriter, request)
+		}
+	}
+}
+
 func (server *Server) error404PageHandler(responseWriter http.ResponseWriter, request *http.Request) {
 	err := server.renderPage(responseWriter, request, error404PageData, http.StatusNotFound)
 	if err != nil {
