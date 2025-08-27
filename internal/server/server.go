@@ -7,6 +7,7 @@ import (
 type (
 	Server struct {
 		address string
+		router  *http.ServeMux
 	}
 
 	pageData struct {
@@ -17,7 +18,9 @@ type (
 
 const (
 	pageTitleDefault  = "DummyAI"
+	homePagePath      = "GET /"
 	homePageWASMPath  = "/static/wasm/home.wasm"
+	aboutPagePath     = "GET /about"
 	aboutPageWASMPath = "/static/wasm/about.wasm"
 )
 
@@ -29,6 +32,7 @@ var (
 func New(address string) (*Server, error) {
 	server := &Server{
 		address: address,
+		router:  http.NewServeMux(),
 	}
 	return server, nil
 }
