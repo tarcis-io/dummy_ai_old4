@@ -1,13 +1,16 @@
 package server
 
 import (
+	"embed"
 	"net/http"
+	"text/template"
 )
 
 type (
 	Server struct {
-		address string
-		router  *http.ServeMux
+		address      string
+		router       *http.ServeMux
+		pageTemplate *template.Template
 	}
 
 	pageData struct {
@@ -25,6 +28,9 @@ const (
 )
 
 var (
+	//go:embed web/*
+	webFS embed.FS
+
 	homePageData  = newPageData(homePageWASMPath)
 	aboutPageData = newPageData(aboutPageWASMPath)
 	pageRoutes    = map[string]*pageData{
@@ -34,9 +40,14 @@ var (
 )
 
 func New(address string) (*Server, error) {
+	pageTemplate, err := template.ParseFS(webFS, "web/template/*.html")
+	if err != nil {
+		return nil, err
+	}
 	server := &Server{
-		address: address,
-		router:  http.NewServeMux(),
+		address:      address,
+		router:       http.NewServeMux(),
+		pageTemplate: pageTemplate,
 	}
 	for pagePath, pageData := range pageRoutes {
 		server.router.HandleFunc(pagePath, server.makePageHandler(pageData))
