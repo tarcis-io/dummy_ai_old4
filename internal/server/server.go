@@ -11,6 +11,10 @@ type (
 	}
 )
 
+const (
+	pageTitleDefault = "DummyAI"
+)
+
 func New(address string) (*Server, error) {
 	server := &Server{
 		address: address,
@@ -20,6 +24,7 @@ func New(address string) (*Server, error) {
 
 func newPageData(wasmPath string) *pageData {
 	pageData := &pageData{
+		Title:    pageTitleDefault,
 		WASMPath: wasmPath,
 	}
 	return pageData
