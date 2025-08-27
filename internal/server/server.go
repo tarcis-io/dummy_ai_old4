@@ -12,7 +12,14 @@ type (
 )
 
 const (
-	pageTitleDefault = "DummyAI"
+	pageTitleDefault  = "DummyAI"
+	homePageWASMPath  = "/static/wasm/home.wasm"
+	aboutPageWASMPath = "/static/wasm/about.wasm"
+)
+
+var (
+	homePageData  = newPageData(homePageWASMPath)
+	aboutPageData = newPageData(aboutPageWASMPath)
 )
 
 func New(address string) (*Server, error) {
