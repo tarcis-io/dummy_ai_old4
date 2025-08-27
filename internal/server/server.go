@@ -2,6 +2,7 @@ package server
 
 import (
 	"embed"
+	"io/fs"
 	"log/slog"
 	"net/http"
 	"text/template"
@@ -55,6 +56,11 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 		pageTemplate: pageTemplate,
 		logger:       logger,
 	}
+	staticFS, err := fs.Sub(webFS, "web/static")
+	if err != nil {
+		return nil, err
+	}
+	server.router.Handle("/static/", http.StripPrefix("/static/", http.FileServerFS(staticFS)))
 	for pagePath, pageData := range pageRoutes {
 		server.router.HandleFunc(pagePath, server.makePageHandler(pageData))
 	}
