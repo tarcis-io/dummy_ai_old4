@@ -8,7 +8,16 @@ type (
 )
 
 const (
-	pageTitleDefault = "DummyAI"
+	pageTitleDefault  = "DummyAI"
+	homePagePath      = "GET /"
+	homePageWASMPath  = "/static/wasm/home.wasm"
+	aboutPagePath     = "GET /about"
+	aboutPageWASMPath = "/static/wasm/about.wasm"
+)
+
+var (
+	homePageData  = newPageData(homePageWASMPath)
+	aboutPageData = newPageData(aboutPageWASMPath)
 )
 
 func newPageData(wasmPath string) *pageData {
