@@ -1,5 +1,9 @@
 package server
 
+import (
+	"net/http"
+)
+
 type (
 	Server struct {
 		address string
@@ -27,6 +31,15 @@ func New(address string) (*Server, error) {
 		address: address,
 	}
 	return server, nil
+}
+
+func (server *Server) makePageHandler(pageData *pageData) func(http.ResponseWriter, *http.Request) {
+	return func(responseWriter http.ResponseWriter, request *http.Request) {
+		server.renderPage(responseWriter, request, pageData)
+	}
+}
+
+func (server *Server) renderPage(responseWriter http.ResponseWriter, request *http.Request, pageData *pageData) {
 }
 
 func newPageData(wasmPath string) *pageData {
