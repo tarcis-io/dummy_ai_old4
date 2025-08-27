@@ -10,10 +10,10 @@ import (
 
 type (
 	Server struct {
-		address      string
-		router       *http.ServeMux
-		pageTemplate *template.Template
-		logger       *slog.Logger
+		address       string
+		router        *http.ServeMux
+		pageTemplates *template.Template
+		logger        *slog.Logger
 	}
 
 	pageData struct {
@@ -43,7 +43,7 @@ var (
 )
 
 func New(address string, logger *slog.Logger) (*Server, error) {
-	pageTemplate, err := template.ParseFS(webFS, "web/template/*.html")
+	pageTemplates, err := template.ParseFS(webFS, "web/template/*.html")
 	if err != nil {
 		return nil, err
 	}
@@ -51,10 +51,10 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 		logger = slog.Default()
 	}
 	server := &Server{
-		address:      address,
-		router:       http.NewServeMux(),
-		pageTemplate: pageTemplate,
-		logger:       logger,
+		address:       address,
+		router:        http.NewServeMux(),
+		pageTemplates: pageTemplates,
+		logger:        logger,
 	}
 	staticFS, err := fs.Sub(webFS, "web/static")
 	if err != nil {
