@@ -1,8 +1,13 @@
 package server
 
+import (
+	"net/http"
+)
+
 type (
 	Server struct {
 		address string
+		router  *http.ServeMux
 	}
 )
 
@@ -11,4 +16,8 @@ func New(address string) (*Server, error) {
 		address: address,
 	}
 	return server, nil
+}
+
+func (server *Server) Start() error {
+	return http.ListenAndServe(server.address, server.router)
 }
