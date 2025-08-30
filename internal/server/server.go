@@ -5,7 +5,6 @@ import (
 	"embed"
 	"html/template"
 	"io/fs"
-	"log/slog"
 	"net/http"
 )
 
@@ -13,7 +12,6 @@ type (
 	Server struct {
 		address string
 		router  *http.ServeMux
-		logger  *slog.Logger
 	}
 
 	pageData struct {
@@ -46,7 +44,7 @@ var (
 	}
 )
 
-func New(address string, logger *slog.Logger) (*Server, error) {
+func New(address string) (*Server, error) {
 	staticFS, err := fs.Sub(webFS, staticDirectory)
 	if err != nil {
 		return nil, err
@@ -69,13 +67,9 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 			w.Write(content)
 		})
 	}
-	if logger == nil {
-		logger = slog.Default()
-	}
 	server := &Server{
 		address: address,
 		router:  router,
-		logger:  logger,
 	}
 	return server, nil
 }
