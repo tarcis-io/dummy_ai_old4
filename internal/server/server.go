@@ -88,7 +88,7 @@ func (server *Server) registerRoutes() error {
 		}
 		cache := buffer.Bytes()
 		server.router.HandleFunc(pagePath, func(responseWriter http.ResponseWriter, request *http.Request) {
-			responseWriter.Header().Set("Content-Type", "text/html")
+			responseWriter.Header().Set("Content-Type", "text/html; charset=UTF-8")
 			responseWriter.Write(cache)
 		})
 	}
