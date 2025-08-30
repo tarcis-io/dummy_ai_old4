@@ -59,7 +59,11 @@ func New(address string) (*Server, error) {
 }
 
 func (server *Server) Start() error {
-	return http.ListenAndServe(server.address, server.router)
+	err := http.ListenAndServe(server.address, server.router)
+	if err != nil {
+		return fmt.Errorf("failed to start server error=%w", err)
+	}
+	return nil
 }
 
 func (server *Server) registerStaticFiles() error {
