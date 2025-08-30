@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 )
 
@@ -18,11 +19,11 @@ func New(address string) (*Server, error) {
 	}
 	err := server.registerStaticFiles()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to register static files error=%w", err)
 	}
 	err = server.registerRoutes()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to register routes error=%w", err)
 	}
 	return server, nil
 }
