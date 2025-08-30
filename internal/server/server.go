@@ -3,10 +3,10 @@ package server
 import (
 	"bytes"
 	"embed"
+	"html/template"
 	"io/fs"
 	"log/slog"
 	"net/http"
-	"text/template"
 )
 
 type (
@@ -64,8 +64,9 @@ func New(address string, logger *slog.Logger) (*Server, error) {
 		if err != nil {
 			return nil, err
 		}
+		content := buffer.Bytes()
 		router.HandleFunc(pagePath, func(w http.ResponseWriter, r *http.Request) {
-			w.Write(buffer.Bytes())
+			w.Write(content)
 		})
 	}
 	if logger == nil {
