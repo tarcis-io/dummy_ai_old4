@@ -1,10 +1,6 @@
 package server
 
 import (
-	"bytes"
-	"embed"
-	"html/template"
-	"io/fs"
 	"net/http"
 )
 
@@ -13,63 +9,20 @@ type (
 		address string
 		router  *http.ServeMux
 	}
-
-	pageData struct {
-		Title    string
-		WASMPath string
-	}
-)
-
-const (
-	staticDirectory   = "web/static"
-	staticPath        = "/static/"
-	templatesPattern  = "web/template/*.html"
-	pageTitleDefault  = "DummyAI"
-	homePagePath      = "GET /"
-	homePageWASMPath  = "/static/wasm/home.wasm"
-	aboutPagePath     = "GET /about"
-	aboutPageWASMPath = "/static/wasm/about.wasm"
-)
-
-var (
-	//go:embed web/*
-	webFS embed.FS
-
-	homePageData  = newPageData(homePageWASMPath)
-	aboutPageData = newPageData(aboutPageWASMPath)
-
-	pageRoutes = map[string]*pageData{
-		homePagePath:  homePageData,
-		aboutPagePath: aboutPageData,
-	}
 )
 
 func New(address string) (*Server, error) {
-	staticFS, err := fs.Sub(webFS, staticDirectory)
-	if err != nil {
-		return nil, err
-	}
-	staticFileServer := http.FileServer(http.FS(staticFS))
-	router := http.NewServeMux()
-	router.Handle(staticPath, http.StripPrefix(staticPath, staticFileServer))
-	pageTemplates, err := template.ParseFS(webFS, templatesPattern)
-	if err != nil {
-		return nil, err
-	}
-	for pagePath, pageData := range pageRoutes {
-		var buffer bytes.Buffer
-		err = pageTemplates.Execute(&buffer, pageData)
-		if err != nil {
-			return nil, err
-		}
-		content := buffer.Bytes()
-		router.HandleFunc(pagePath, func(w http.ResponseWriter, r *http.Request) {
-			w.Write(content)
-		})
-	}
 	server := &Server{
 		address: address,
-		router:  router,
+		router:  http.NewServeMux(),
+	}
+	err := server.registerStaticFiles()
+	if err != nil {
+		return nil, err
+	}
+	err = server.registerRoutes()
+	if err != nil {
+		return nil, err
 	}
 	return server, nil
 }
@@ -78,10 +31,10 @@ func (server *Server) Start() error {
 	return http.ListenAndServe(server.address, server.router)
 }
 
-func newPageData(wasmPath string) *pageData {
-	pageData := &pageData{
-		Title:    pageTitleDefault,
-		WASMPath: wasmPath,
-	}
-	return pageData
+func (server *Server) registerStaticFiles() error {
+	return nil
+}
+
+func (server *Server) registerRoutes() error {
+	return nil
 }
