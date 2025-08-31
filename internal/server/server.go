@@ -23,7 +23,7 @@ func New(address string) (*Server, error) {
 func (server *Server) Start() error {
 	err := http.ListenAndServe(server.address, server.router)
 	if err != nil {
-		return fmt.Errorf("failed to start server error=%w", err)
+		return fmt.Errorf("failed to start server address=%s error=%w", server.address, err)
 	}
 	return nil
 }
