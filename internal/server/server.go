@@ -7,20 +7,38 @@ import (
 	"net/http"
 )
 
+type (
+	Server struct {
+		address string
+		router  *http.ServeMux
+	}
+
+	pageData struct {
+		Title    string
+		WASMPath string
+	}
+)
+
 const (
 	staticFilesDirectory = "web/static"
 	staticFilesPath      = "/static/"
+	pageTitleDefault     = "DummyAI"
+	homePagePath         = "GET /"
+	homePageWASMPath     = "/static/wasm/home.wasm"
+	aboutPagePath        = "GET /about"
+	aboutPageWASMPath    = "/static/wasm/about.wasm"
 )
 
 var (
 	//go:embed web/*
 	webFS embed.FS
-)
 
-type (
-	Server struct {
-		address string
-		router  *http.ServeMux
+	homePageData  = newPageData(homePageWASMPath)
+	aboutPageData = newPageData(aboutPageWASMPath)
+
+	pageRoutes = map[string]*pageData{
+		homePagePath:  homePageData,
+		aboutPagePath: aboutPageData,
 	}
 )
 
@@ -51,4 +69,12 @@ func (server *Server) registerStaticFiles() error {
 	}
 	server.router.Handle(staticFilesPath, http.StripPrefix(staticFilesPath, http.FileServerFS(staticFilesFS)))
 	return nil
+}
+
+func newPageData(wasmPath string) *pageData {
+	pageData := &pageData{
+		Title:    pageTitleDefault,
+		WASMPath: wasmPath,
+	}
+	return pageData
 }
