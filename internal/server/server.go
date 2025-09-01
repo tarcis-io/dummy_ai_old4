@@ -8,13 +8,19 @@ import (
 type (
 	// Server represents the pre-configured HTTP server for the application.
 	Server struct {
+		// address specifies the address to listen on.
 		address string
-		router  *http.ServeMux
+
+		// router specifies the HTTP request multiplexer.
+		router *http.ServeMux
 	}
 
 	// pageData represents the data that is passed to the HTML template.
 	pageData struct {
-		Title    string
+		// Title specifies the page title.
+		Title string
+
+		// WASMPath specifies the path to the WASM file.
 		WASMPath string
 	}
 )
