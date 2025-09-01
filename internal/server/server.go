@@ -20,16 +20,9 @@ type (
 )
 
 const (
-	staticFilesDirectory       = "web/static"
-	staticFilesPath            = "/static/"
-	pageTemplatePattern        = "web/template/*.html"
-	pageHeaderContentType      = "Content-Type"
-	pageHeaderContentTypeValue = "text/html; charset=UTF-8"
-	pageTitleDefault           = "DummyAI"
-	homePagePath               = "GET /"
-	homePageWASMPath           = "/static/wasm/home.wasm"
-	aboutPagePath              = "GET /about"
-	aboutPageWASMPath          = "/static/wasm/about.wasm"
+	staticFilesDirectory = "web/static"
+	staticFilesPath      = "/static/"
+	pageTitleDefault     = "DummyAI"
 )
 
 var (
