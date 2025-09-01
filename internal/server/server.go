@@ -22,7 +22,6 @@ type (
 const (
 	staticFilesDirectory = "web/static"
 	staticFilesPath      = "/static/"
-	pageTitleDefault     = "DummyAI"
 )
 
 var (
@@ -65,12 +64,4 @@ func (server *Server) registerStaticFiles() error {
 
 func (server *Server) registerPageRoutes() error {
 	return nil
-}
-
-func newPageData(wasmPath string) *pageData {
-	pageData := &pageData{
-		Title:    pageTitleDefault,
-		WASMPath: wasmPath,
-	}
-	return pageData
 }
