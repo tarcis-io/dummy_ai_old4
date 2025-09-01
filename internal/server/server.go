@@ -22,19 +22,25 @@ type (
 )
 
 const (
-	staticFilesDirectory = "web/static"
-	staticFilesPath      = "/static/"
-	pageTemplatePattern  = "web/template/*.html"
-	pageTitleDefault     = "DummyAI"
-	homePagePath         = "GET /"
-	homePageWASMPath     = "/static/wasm/home.wasm"
-	aboutPagePath        = "GET /about"
-	aboutPageWASMPath    = "/static/wasm/about.wasm"
+	staticFilesDirectory       = "web/static"
+	staticFilesPath            = "/static/"
+	pageTemplatePattern        = "web/template/*.html"
+	pageHeaderContentType      = "Content-Type"
+	pageHeaderContentTypeValue = "text/html; charset=UTF-8"
+	pageTitleDefault           = "DummyAI"
+	homePagePath               = "GET /"
+	homePageWASMPath           = "/static/wasm/home.wasm"
+	aboutPagePath              = "GET /about"
+	aboutPageWASMPath          = "/static/wasm/about.wasm"
 )
 
 var (
 	//go:embed web/*
 	webFS embed.FS
+
+	pageHeaders = map[string]string{
+		pageHeaderContentType: pageHeaderContentTypeValue,
+	}
 
 	homePageData  = newPageData(homePageWASMPath)
 	aboutPageData = newPageData(aboutPageWASMPath)
@@ -91,6 +97,9 @@ func (server *Server) registerPageRoutes() error {
 		}
 		pageCache := buffer.Bytes()
 		server.router.HandleFunc(pagePath, func(responseWriter http.ResponseWriter, request *http.Request) {
+			for pageHeader, pageHeaderValue := range pageHeaders {
+				responseWriter.Header().Set(pageHeader, pageHeaderValue)
+			}
 			responseWriter.Write(pageCache)
 		})
 	}
