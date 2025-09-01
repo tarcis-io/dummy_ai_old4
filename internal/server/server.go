@@ -88,7 +88,7 @@ func (server *Server) registerPageRoutes() error {
 		var buffer bytes.Buffer
 		err := pageTemplate.Execute(&buffer, pageData)
 		if err != nil {
-			return fmt.Errorf("failed to execute page template error=%w", err)
+			return fmt.Errorf("failed to execute page template path=%s wasmPath=%s error=%w", pagePath, pageData.WASMPath, err)
 		}
 		pageCache := buffer.Bytes()
 		server.router.HandleFunc(pagePath, func(responseWriter http.ResponseWriter, request *http.Request) {
