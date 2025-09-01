@@ -27,6 +27,12 @@ type (
 )
 
 const (
+	// staticFilesDirectory is the directory containing the static files.
+	staticFilesDirectory = "web/static"
+
+	// staticFilesPathPrefix is the path prefix for the static files.
+	staticFilesPathPrefix = "/static/"
+
 	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
 )
