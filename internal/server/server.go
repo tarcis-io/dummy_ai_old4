@@ -1,8 +1,10 @@
 package server
 
 import (
+	"bytes"
 	"embed"
 	"fmt"
+	"html/template"
 	"io/fs"
 	"net/http"
 )
@@ -22,6 +24,7 @@ type (
 const (
 	staticFilesDirectory = "web/static"
 	staticFilesPath      = "/static/"
+	pageTemplatePattern  = "web/template/*.html"
 	pageTitleDefault     = "DummyAI"
 	homePagePath         = "GET /"
 	homePageWASMPath     = "/static/wasm/home.wasm"
@@ -51,6 +54,10 @@ func New(address string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = server.registerPageRoutes()
+	if err != nil {
+		return nil, err
+	}
 	return server, nil
 }
 
@@ -68,6 +75,25 @@ func (server *Server) registerStaticFiles() error {
 		return fmt.Errorf("failed to register static files error=%w", err)
 	}
 	server.router.Handle(staticFilesPath, http.StripPrefix(staticFilesPath, http.FileServerFS(staticFilesFS)))
+	return nil
+}
+
+func (server *Server) registerPageRoutes() error {
+	pageTemplate, err := template.ParseFS(webFS, pageTemplatePattern)
+	if err != nil {
+		return fmt.Errorf("failed to parse page templates error=%w", err)
+	}
+	for pagePath, pageData := range pageRoutes {
+		var buffer bytes.Buffer
+		err := pageTemplate.Execute(&buffer, pageData)
+		if err != nil {
+			return fmt.Errorf("failed to execute page template error=%w", err)
+		}
+		pageCache := buffer.Bytes()
+		server.router.HandleFunc(pagePath, func(responseWriter http.ResponseWriter, request *http.Request) {
+			responseWriter.Write(pageCache)
+		})
+	}
 	return nil
 }
 
