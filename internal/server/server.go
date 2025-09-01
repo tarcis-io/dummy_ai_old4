@@ -2,6 +2,7 @@
 package server
 
 import (
+	"embed"
 	"net/http"
 )
 
@@ -28,6 +29,12 @@ type (
 const (
 	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
+)
+
+var (
+	// webFS is the embedded file system for the web directory.
+	//go:embed web
+	webFS embed.FS
 )
 
 // newPageData creates and returns a new pageData instance.
