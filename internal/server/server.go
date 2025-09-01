@@ -37,18 +37,6 @@ const (
 var (
 	//go:embed web/*
 	webFS embed.FS
-
-	pageHeaders = map[string]string{
-		pageHeaderContentType: pageHeaderContentTypeValue,
-	}
-
-	homePageData  = newPageData(homePageWASMPath)
-	aboutPageData = newPageData(aboutPageWASMPath)
-
-	pageRoutes = map[string]*pageData{
-		homePagePath:  homePageData,
-		aboutPagePath: aboutPageData,
-	}
 )
 
 func New(address string) (*Server, error) {
@@ -87,7 +75,14 @@ func (server *Server) registerStaticFiles() error {
 func (server *Server) registerPageRoutes() error {
 	pageTemplate, err := template.ParseFS(webFS, pageTemplatePattern)
 	if err != nil {
-		return fmt.Errorf("failed to parse page templates error=%w", err)
+		return fmt.Errorf("failed to parse page templates pattern=%s error=%w", pageTemplatePattern, err)
+	}
+	pageRoutes := map[string]*pageData{
+		homePagePath:  newPageData(homePageWASMPath),
+		aboutPagePath: newPageData(aboutPageWASMPath),
+	}
+	pageHeaders := map[string]string{
+		pageHeaderContentType: pageHeaderContentTypeValue,
 	}
 	for pagePath, pageData := range pageRoutes {
 		var buffer bytes.Buffer
