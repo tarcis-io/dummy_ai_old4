@@ -3,6 +3,8 @@ package server
 
 import (
 	"embed"
+	"fmt"
+	"io/fs"
 	"net/http"
 )
 
@@ -42,6 +44,15 @@ var (
 	//go:embed web
 	webFS embed.FS
 )
+
+func (server *Server) registerStaticFiles() error {
+	staticFiles, err := fs.Sub(webFS, staticFilesDirectory)
+	if err != nil {
+		return fmt.Errorf("failed to open static files directory error=%w", err)
+	}
+	server.router.Handle(staticFilesPathPrefix, http.StripPrefix(staticFilesPathPrefix, http.FileServerFS(staticFiles)))
+	return nil
+}
 
 // newPageData creates and returns a new pageData instance.
 func newPageData(wasmPath string) *pageData {
