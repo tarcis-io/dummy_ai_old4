@@ -35,8 +35,23 @@ const (
 	// staticFilesPathPrefix is the path prefix for the static files.
 	staticFilesPathPrefix = "/static/"
 
+	// pageTemplatePattern is the directory pattern for the HTML page templates.
+	pageTemplatePattern = "web/template/*.html"
+
 	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
+
+	// homePagePath is the path for the home page.
+	homePagePath = "GET /"
+
+	// homePageWASMPath is the path for the home page WASM file.
+	homePageWASMPath = "/static/wasm/home.wasm"
+
+	// aboutPagePath is the path for the about page.
+	aboutPagePath = "GET /about"
+
+	// aboutPageWASMPath is the path for the about page WASM file.
+	aboutPageWASMPath = "/static/wasm/about.wasm"
 )
 
 var (
