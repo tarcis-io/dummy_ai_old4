@@ -27,6 +27,8 @@ const (
 var (
 	//go:embed web/*
 	webFS embed.FS
+
+	pageHeaders = map[string]string{}
 )
 
 func New(address string) (*Server, error) {
@@ -64,4 +66,13 @@ func (server *Server) registerStaticFiles() error {
 
 func (server *Server) registerPageRoutes() error {
 	return nil
+}
+
+func newPageHandler(pageCache []byte) func(http.ResponseWriter, *http.Request) {
+	return func(responseWriter http.ResponseWriter, request *http.Request) {
+		for header, value := range pageHeaders {
+			responseWriter.Header().Set(header, value)
+		}
+		responseWriter.Write(pageCache)
+	}
 }
