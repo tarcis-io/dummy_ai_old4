@@ -22,6 +22,7 @@ type (
 const (
 	staticFilesDirectory = "web/static"
 	staticFilesPath      = "/static/"
+	pageTemplatePattern  = "web/template/*.html"
 	pageTitleDefault     = "DummyAI"
 )
 
@@ -48,6 +49,10 @@ func New(address string) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = server.registerPageRoutes()
+	if err != nil {
+		return nil, err
+	}
 	return server, nil
 }
 
@@ -65,6 +70,10 @@ func (server *Server) registerStaticFiles() error {
 		return fmt.Errorf("failed to open static files directory error=%w", err)
 	}
 	server.router.Handle(staticFilesPath, http.StripPrefix(staticFilesPath, http.FileServerFS(staticFiles)))
+	return nil
+}
+
+func (server *Server) registerPageRoutes() error {
 	return nil
 }
 
