@@ -26,9 +26,11 @@ type (
 )
 
 const (
+	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
 )
 
+// newPageData creates and returns a new pageData instance.
 func newPageData(wasmPath string) *pageData {
 	pageData := &pageData{
 		Title:    pageTitleDefault,
