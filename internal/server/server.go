@@ -45,6 +45,8 @@ var (
 	webFS embed.FS
 )
 
+// registerStaticFiles configures the server to serve static files
+// from the embedded file system.
 func (server *Server) registerStaticFiles() error {
 	staticFiles, err := fs.Sub(webFS, staticFilesDirectory)
 	if err != nil {
