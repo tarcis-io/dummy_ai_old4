@@ -28,6 +28,15 @@ const (
 var (
 	//go:embed web/*
 	webFS embed.FS
+
+	pageRoutes = map[string]*pageData{
+		"GET /":      newPageData("/static/wasm/home.wasm"),
+		"GET /about": newPageData("/static/wasm/about.wasm"),
+	}
+
+	pageHeaders = map[string]string{
+		"Content-Type": "text/html; charset=UTF-8",
+	}
 )
 
 func New(address string) (*Server, error) {
