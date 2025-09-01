@@ -12,11 +12,17 @@ type (
 		address string
 		router  *http.ServeMux
 	}
+
+	pageData struct {
+		Title    string
+		WASMPath string
+	}
 )
 
 const (
 	staticFilesDirectory = "web/static"
 	staticFilesPath      = "/static/"
+	pageTitleDefault     = "DummyAI"
 )
 
 var (
@@ -51,4 +57,12 @@ func (server *Server) registerStaticFiles() error {
 	}
 	server.router.Handle(staticFilesPath, http.StripPrefix(staticFilesPath, http.FileServerFS(staticFiles)))
 	return nil
+}
+
+func newPageData(wasmPath string) *pageData {
+	pageData := &pageData{
+		Title:    pageTitleDefault,
+		WASMPath: wasmPath,
+	}
+	return pageData
 }
