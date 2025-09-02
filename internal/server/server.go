@@ -83,6 +83,14 @@ func New(address string) (*Server, error) {
 	return server, nil
 }
 
+func (server *Server) Start() error {
+	err := http.ListenAndServe(server.address, server.router)
+	if err != nil {
+		return fmt.Errorf("failed to start server address=%s error=%w", server.address, err)
+	}
+	return nil
+}
+
 // registerStaticFiles configures the server to serve static files
 // from the embedded file system.
 func (server *Server) registerStaticFiles() error {
