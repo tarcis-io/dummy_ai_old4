@@ -60,6 +60,7 @@ var (
 	webFS embed.FS
 )
 
+// New creates, configures and returns a new Server instance.
 func New(address string) (*Server, error) {
 	server := &Server{
 		address: address,
