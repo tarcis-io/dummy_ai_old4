@@ -38,6 +38,12 @@ const (
 	// pageTemplatePattern is the directory pattern for the HTML page templates.
 	pageTemplatePattern = "web/template/*.html"
 
+	// pageHeaderContentTypeKey is the header key for the content type.
+	pageHeaderContentTypeKey = "Content-Type"
+
+	// pageHeaderContentTypeValue is the header value for the content type.
+	pageHeaderContentTypeValue = "text/html; charset=UTF-8"
+
 	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
 
