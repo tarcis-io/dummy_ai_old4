@@ -83,6 +83,7 @@ func New(address string) (*Server, error) {
 	return server, nil
 }
 
+// Start starts the server and listens for incoming requests.
 func (server *Server) Start() error {
 	err := http.ListenAndServe(server.address, server.router)
 	if err != nil {
