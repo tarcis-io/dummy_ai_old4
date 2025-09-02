@@ -71,6 +71,11 @@ func (server *Server) registerStaticFiles() error {
 	return nil
 }
 
+// registerPageRoutes configures the server to serve HTML pages.
+func (server *Server) registerPageRoutes() error {
+	return nil
+}
+
 // newPageData creates and returns a new pageData instance.
 func newPageData(wasmPath string) *pageData {
 	pageData := &pageData{
