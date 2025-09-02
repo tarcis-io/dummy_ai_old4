@@ -111,6 +111,9 @@ func (server *Server) registerPageRoutes() error {
 	if err != nil {
 		return fmt.Errorf("failed to parse page template error=%w", err)
 	}
+	pageHeaders := map[string]string{
+		pageHeaderContentTypeKey: pageHeaderContentTypeValue,
+	}
 	pageRoutes := map[string]*pageData{
 		homePagePath:  newPageData(homePageWASMPath),
 		aboutPagePath: newPageData(aboutPageWASMPath),
@@ -123,6 +126,9 @@ func (server *Server) registerPageRoutes() error {
 		}
 		pageCache := pageBuffer.Bytes()
 		server.router.HandleFunc(pagePath, func(responseWriter http.ResponseWriter, request *http.Request) {
+			for pageHeaderKey, pageHeaderValue := range pageHeaders {
+				responseWriter.Header().Set(pageHeaderKey, pageHeaderValue)
+			}
 			responseWriter.Write(pageCache)
 		})
 	}
