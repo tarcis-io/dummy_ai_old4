@@ -2,8 +2,10 @@
 package server
 
 import (
+	"bytes"
 	"embed"
 	"fmt"
+	"html/template"
 	"io/fs"
 	"net/http"
 )
@@ -105,6 +107,25 @@ func (server *Server) registerStaticFiles() error {
 
 // registerPageRoutes configures the server to serve HTML pages.
 func (server *Server) registerPageRoutes() error {
+	pageTemplate, err := template.ParseFS(webFS, pageTemplatePattern)
+	if err != nil {
+		return fmt.Errorf("failed to parse page template error=%w", err)
+	}
+	pageRoutes := map[string]*pageData{
+		homePagePath:  newPageData(homePageWASMPath),
+		aboutPagePath: newPageData(aboutPageWASMPath),
+	}
+	for pagePath, pageData := range pageRoutes {
+		pageBuffer := new(bytes.Buffer)
+		err = pageTemplate.Execute(pageBuffer, pageData)
+		if err != nil {
+			return fmt.Errorf("failed to execute page template error=%w", err)
+		}
+		pageCache := pageBuffer.Bytes()
+		server.router.HandleFunc(pagePath, func(responseWriter http.ResponseWriter, request *http.Request) {
+			responseWriter.Write(pageCache)
+		})
+	}
 	return nil
 }
 
