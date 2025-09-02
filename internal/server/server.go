@@ -60,6 +60,22 @@ var (
 	webFS embed.FS
 )
 
+func New(address string) (*Server, error) {
+	server := &Server{
+		address: address,
+		router:  http.NewServeMux(),
+	}
+	err := server.registerStaticFiles()
+	if err != nil {
+		return nil, err
+	}
+	err = server.registerPageRoutes()
+	if err != nil {
+		return nil, err
+	}
+	return server, nil
+}
+
 // registerStaticFiles configures the server to serve static files
 // from the embedded file system.
 func (server *Server) registerStaticFiles() error {
