@@ -96,6 +96,7 @@ func (server *Server) Start() error {
 
 // registerStaticFiles configures the server to serve static files
 // from the embedded file system.
+// It returns an error if the static files directory cannot be opened.
 func (server *Server) registerStaticFiles() error {
 	staticFiles, err := fs.Sub(webFS, staticFilesDirectory)
 	if err != nil {
@@ -106,6 +107,7 @@ func (server *Server) registerStaticFiles() error {
 }
 
 // registerPageRoutes configures the server to serve HTML pages.
+// It returns an error if the page template cannot be parsed or if a page cannot be registered.
 func (server *Server) registerPageRoutes() error {
 	pageTemplate, err := template.ParseFS(webFS, pageTemplatePattern)
 	if err != nil {
