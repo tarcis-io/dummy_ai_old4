@@ -40,22 +40,28 @@ const (
 	// pageTemplatePattern is the directory pattern for the HTML page templates.
 	pageTemplatePattern = "web/template/*.html"
 
-	// pageHeaderContentTypeKey is the header key for the content type.
+	// pageHeaderContentTypeKey is the key for the Content-Type page header.
 	pageHeaderContentTypeKey = "Content-Type"
 
-	// pageHeaderContentTypeValue is the header value for the content type.
+	// pageHeaderContentTypeValue is the value for the Content-Type page header.
 	pageHeaderContentTypeValue = "text/html; charset=UTF-8"
 
+	// pageHeaderContentSecurityPolicyKey is the key for the Content-Security-Policy page header.
 	pageHeaderContentSecurityPolicyKey = "Content-Security-Policy"
 
+	// pageHeaderContentSecurityPolicyValue is the value for the Content-Security-Policy page header.
 	pageHeaderContentSecurityPolicyValue = "default-src 'self';"
 
+	// pageHeaderXContentTypeOptionsKey is the key for the X-Content-Type-Options page header.
 	pageHeaderXContentTypeOptionsKey = "X-Content-Type-Options"
 
+	// pageHeaderXContentTypeOptionsValue is the value for the X-Content-Type-Options page header.
 	pageHeaderXContentTypeOptionsValue = "nosniff"
 
+	// pageHeaderXFrameOptionsKey is the key for the X-Frame-Options page header.
 	pageHeaderXFrameOptionsKey = "X-Frame-Options"
 
+	// pageHeaderXFrameOptionsValue is the value for the X-Frame-Options page header.
 	pageHeaderXFrameOptionsValue = "DENY"
 
 	// pageTitleDefault is the default value for the page title.
