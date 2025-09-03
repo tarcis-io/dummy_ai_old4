@@ -158,6 +158,15 @@ func (server *Server) registerPageRoutes() error {
 	return nil
 }
 
+func (server *Server) headersMiddlewareHandler(headers map[string]string, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(responseWriter http.ResponseWriter, request *http.Request) {
+		for headerKey, headerValue := range headers {
+			responseWriter.Header().Set(headerKey, headerValue)
+		}
+		next.ServeHTTP(responseWriter, request)
+	})
+}
+
 // newPageData creates and returns a new pageData instance.
 func newPageData(wasmPath string) *pageData {
 	pageData := &pageData{
