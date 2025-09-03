@@ -46,6 +46,10 @@ const (
 	// pageHeaderContentTypeValue is the header value for the content type.
 	pageHeaderContentTypeValue = "text/html; charset=UTF-8"
 
+	pageHeaderContentSecurityPolicyKey = "Content-Security-Policy"
+
+	pageHeaderContentSecurityPolicyValue = "default-src 'self';"
+
 	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
 
@@ -114,7 +118,8 @@ func (server *Server) registerPageRoutes() error {
 		return fmt.Errorf("failed to parse page template error=%w", err)
 	}
 	pageHeaders := map[string]string{
-		pageHeaderContentTypeKey: pageHeaderContentTypeValue,
+		pageHeaderContentTypeKey:           pageHeaderContentTypeValue,
+		pageHeaderContentSecurityPolicyKey: pageHeaderContentSecurityPolicyValue,
 	}
 	pageRoutes := map[string]*pageData{
 		homePagePath:  newPageData(homePageWASMPath),
