@@ -54,6 +54,10 @@ const (
 
 	pageHeaderXContentTypeOptionsValue = "nosniff"
 
+	pageHeaderXFrameOptionsKey = "X-Frame-Options"
+
+	pageHeaderXFrameOptionsValue = "DENY"
+
 	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
 
@@ -125,6 +129,7 @@ func (server *Server) registerPageRoutes() error {
 		pageHeaderContentTypeKey:           pageHeaderContentTypeValue,
 		pageHeaderContentSecurityPolicyKey: pageHeaderContentSecurityPolicyValue,
 		pageHeaderXContentTypeOptionsKey:   pageHeaderXContentTypeOptionsValue,
+		pageHeaderXFrameOptionsKey:         pageHeaderXFrameOptionsValue,
 	}
 	pageRoutes := map[string]*pageData{
 		homePagePath:  newPageData(homePageWASMPath),
