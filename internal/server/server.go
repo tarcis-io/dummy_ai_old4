@@ -50,6 +50,10 @@ const (
 
 	pageHeaderContentSecurityPolicyValue = "default-src 'self';"
 
+	pageHeaderXContentTypeOptionsKey = "X-Content-Type-Options"
+
+	pageHeaderXContentTypeOptionsValue = "nosniff"
+
 	// pageTitleDefault is the default value for the page title.
 	pageTitleDefault = "DummyAI"
 
@@ -120,6 +124,7 @@ func (server *Server) registerPageRoutes() error {
 	pageHeaders := map[string]string{
 		pageHeaderContentTypeKey:           pageHeaderContentTypeValue,
 		pageHeaderContentSecurityPolicyKey: pageHeaderContentSecurityPolicyValue,
+		pageHeaderXContentTypeOptionsKey:   pageHeaderXContentTypeOptionsValue,
 	}
 	pageRoutes := map[string]*pageData{
 		homePagePath:  newPageData(homePageWASMPath),
