@@ -1,0 +1,29 @@
+{
+	"[markdown]": {
+		"editor.wordWrap": "off"
+	},
+	"breadcrumbs.enabled": false,
+	"editor.codeLens": false,
+	"editor.detectIndentation": false,
+	"editor.folding": false,
+	"editor.insertSpaces": false,
+	"editor.lightbulb.enabled": "off",
+	"editor.minimap.enabled": false,
+	"editor.stickyScroll.enabled": false,
+	"explorer.compactFolders": false,
+	"explorer.sortOrderLexicographicOptions": "unicode",
+	"files.exclude": {
+		"**/.idx": true,
+		"**/.vscode": true,
+		"**/.gitignore": true,
+	},
+	"files.insertFinalNewline": true,
+	"files.trimTrailingWhitespace": true,
+	"go.toolsEnvVars": {
+		"GOOS": "js",
+		"GOARCH": "wasm"
+	},
+	"html.format.indentInnerHtml": true,
+	"html.format.wrapLineLength": 0,
+	"javascript.validate.enable": false
+}
